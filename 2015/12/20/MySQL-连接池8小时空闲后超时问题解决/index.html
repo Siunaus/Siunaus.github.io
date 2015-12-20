@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>MySQL 连接池8小时空闲后超时问题解决 | Siunaus</title>
+  <meta name="author" content="Li zijian">
+  
+  <meta name="description" content="最近做了一个SSH整合小项目，部署后发现当app长时间空闲时，tomcat会抛出链接超时异常，简单查了下原因，发现是MySQL将8小时内未使用过的链接释放，但是web容器认为链接依然存在，造成链接超时的问题。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="MySQL 连接池8小时空闲后超时问题解决"/>
+  <meta property="og:site_name" content="Siunaus"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Siunaus" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Siunaus</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-12-20T13:09:47.000Z"><a href="/2015/12/20/MySQL-连接池8小时空闲后超时问题解决/">2015-12-20</a></time>
+      
+      
+  
+    <h1 class="title">MySQL 连接池8小时空闲后超时问题解决</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>最近做了一个SSH整合小项目，部署后发现当app长时间空闲时，tomcat会抛出链接超时异常，简单查了下原因，发现是MySQL将8小时内未使用过的链接释放，但是web容器认为链接依然存在，造成链接超时的问题。<br><a id="more"></a><br>解决方案：</p>
+<h3 id="1_u3001_u8C03_u6574MySQL_u7CFB_u7EDF_u53D8_u91CF_wait_time"><a href="#1_u3001_u8C03_u6574MySQL_u7CFB_u7EDF_u53D8_u91CF_wait_time" class="headerlink" title="1、调整MySQL系统变量 wait_time"></a>1、调整MySQL系统变量 wait_time</h3><p>尝试修改了my.ini中的系统变量，将链接保持时间由8小时改为21天（MySQL最多能识别出21天的时间）。程序不再抛出异常，但发现服务器负载过大，原因是MySQL保持了许多闲置的链接，造成服务器内存不足。故不能采用修改系统变量的解决方案。</p>
+<h3 id="2_u3001_u4FEE_u6539Hibernate_u8FDE_u63A5_u6C60_u914D_u7F6E"><a href="#2_u3001_u4FEE_u6539Hibernate_u8FDE_u63A5_u6C60_u914D_u7F6E" class="headerlink" title="2、修改Hibernate连接池配置"></a>2、修改Hibernate连接池配置</h3><p>Hibernate官方文档中不建议使用默认连接池，默认连接池应仅供测试使用，生产项目应采用C3P0连接池。</p>
+<p>在Spring配置文件中修改（注意property和bean的属性与默认连接池的区别）</p>
+ <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">bean</span> <span class="attribute">id</span>=<span class="value">"dataSource"</span></span><br><span class="line">  <span class="attribute">class</span>=<span class="value">"com.mchange.v2.c3p0.ComboPooledDataSource"</span></span><br><span class="line">  <span class="attribute">destroy-method</span>=<span class="value">"close"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"driverClass"</span> <span class="attribute">value</span>=<span class="value">"oracle.jdbc.driver.OracleDriver"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"jdbcUrl"</span> <span class="attribute">value</span>=<span class="value">"jdbc:url"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"user"</span> <span class="attribute">value</span>=<span class="value">"username"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"password"</span> <span class="attribute">value</span>=<span class="value">"password"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 1 --&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"acquireIncrement"</span></span><br><span class="line">   <span class="attribute">value</span>=<span class="value">"1"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 --&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"initialPoolSize"</span></span><br><span class="line">   <span class="attribute">value</span>=<span class="value">"3"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--最大空闲时间,30秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 --&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"maxIdleTime"</span> <span class="attribute">value</span>=<span class="value">"30"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--连接池中保留的最大连接数。Default: 15 --&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"maxPoolSize"</span> <span class="attribute">value</span>=<span class="value">"15"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--连接池中保留的最小连接数。Default: 3 --&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"minPoolSize"</span> <span class="attribute">value</span>=<span class="value">"3"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--两次连接中间隔时间，单位毫秒。Default: 1000 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"acquireRetryDelay"</span> <span class="attribute">value</span>=<span class="value">"1000"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--定义在从数据库获取新连接失败后重复尝试的次数。Default: 30 --&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"acquireRetryAttempts"</span> <span class="attribute">value</span>=<span class="value">"60"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--获取连接失败将会引起所有等待连接池来获取连接的线程抛出异常。但是数据源仍有效 </span><br><span class="line">  保留，并在下次调用getConnection()的时候继续尝试获取连接。如果设为true，那么在尝试 </span><br><span class="line">  获取连接失败后该数据源将申明已断开并永久关闭。Default: false--&gt;</span> </span><br><span class="line">  </span><br><span class="line">  <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"breakAfterAcquireFailure"</span> <span class="attribute">value</span>=<span class="value">"false"</span>&gt;</span><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="title">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java/">Java</a>, <a href="/tags/MySQL/">MySQL</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:yoursite.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Java/">Java</a><small>1</small></li>
+  
+    <li><a href="/tags/Mac-OS-X/">Mac OS X</a><small>1</small></li>
+  
+    <li><a href="/tags/MySQL/">MySQL</a><small>2</small></li>
+  
+    <li><a href="/tags/编码/">编码</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Li zijian
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
