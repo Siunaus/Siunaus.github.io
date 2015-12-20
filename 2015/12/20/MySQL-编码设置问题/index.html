@@ -6,7 +6,7 @@
   <title>MySQL 编码设置问题 | Siunaus</title>
   <meta name="author" content="Li zijian">
   
-  <meta name="description" content="MySQL 编码设置问题首先确定编码问题出现在数据库端而非Web容器">
+  <meta name="description" content="首先确定编码问题出现在数据库端而非Web容器">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -60,7 +60,7 @@
     </header>
     <div class="entry">
       
-        <h3 id="MySQL__u7F16_u7801_u8BBE_u7F6E_u95EE_u9898"><a href="#MySQL__u7F16_u7801_u8BBE_u7F6E_u95EE_u9898" class="headerlink" title="MySQL 编码设置问题"></a>MySQL 编码设置问题</h3><p>首先确定编码问题出现在数据库端而非Web容器</p>
+        <p>首先确定编码问题出现在数据库端而非Web容器</p>
 <a id="more"></a>
 <p>在MySQL命令行输入</p>
 <figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables <span class="keyword">like</span> <span class="string">"%char%"</span>;</span><br></pre></td></tr></table></figure>
@@ -72,13 +72,12 @@
 <p>但是使用这条语句修改后，当MySQL重启时，编码设置失效。应在MySQL配置文件my.cnf文件添加如下代码</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">character_<span class="built_in">set</span>_server=utf8</span><br></pre></td></tr></table></figure>
 <p>重启MySQL即可</p>
-<p>####OS X 系统下my.cnf文件位置</p>
-<p>OS X 系统下默认不会使用my.cnf配置文件 需要自己创建</p>
+<h3 id="OS_X__u7CFB_u7EDF_u4E0Bmy-cnf_u6587_u4EF6_u4F4D_u7F6E"><a href="#OS_X__u7CFB_u7EDF_u4E0Bmy-cnf_u6587_u4EF6_u4F4D_u7F6E" class="headerlink" title="OS X 系统下my.cnf文件位置"></a>OS X 系统下my.cnf文件位置</h3><p>OS X 系统下默认不会使用my.cnf配置文件 需要自己创建</p>
 <p>拷贝下面目录下任意一个.cnf文件并更名为my.cnf</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/usr/</span>local<span class="regexp">/mysql/</span>support-files<span class="regexp">/</span></span><br></pre></td></tr></table></figure>
 <p>粘贴到以下目录下 </p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc</span><br></pre></td></tr></table></figure>
-<p>对my.cnf进行修改 并重启MySQL 即可生效</p>
+<p>对my.cnf进行修改 并重启 MySQL 即可生效</p>
 
       
     </div>
