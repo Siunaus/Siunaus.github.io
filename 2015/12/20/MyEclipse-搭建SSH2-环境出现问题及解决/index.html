@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>MyEclipse 搭建SSH2 环境出现问题及解决 | Siunaus</title>
+  <meta name="author" content="Li zijian">
+  
+  <meta name="description" content="SSH框架搭建的方式有很多种，本文采用了使用MyEclipse自动部署三大框架的方式，但仍需要简单配置">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="MyEclipse 搭建SSH2 环境出现问题及解决"/>
+  <meta property="og:site_name" content="Siunaus"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Siunaus" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Siunaus</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-12-20T13:17:59.000Z"><a href="/2015/12/20/MyEclipse-搭建SSH2-环境出现问题及解决/">2015-12-20</a></time>
+      
+      
+  
+    <h1 class="title">MyEclipse 搭建SSH2 环境出现问题及解决</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>SSH框架搭建的方式有很多种，本文采用了使用MyEclipse自动部署三大框架的方式，但仍需要简单配置</p>
+<a id="more"></a>
+<h3 id="1_u3001java-lang-NullPointerException"><a href="#1_u3001java-lang-NullPointerException" class="headerlink" title="1、java.lang.NullPointerException"></a>1、java.lang.NullPointerException</h3><p>Action空指针异常 在整合Spring之后 Struts.xml 文件中Action配置应修改为Spring托管的名称</p>
+<p>action属性class应与 applicationContext.xml 文件中托管 bean 的 id 属性相对应 而不应直接指向class路径</p>
+<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;action name=<span class="string">"showUsers"</span>class=<span class="string">"UserAction"</span>&gt;</span><br><span class="line">	&lt;<span class="literal">result</span> name=<span class="string">"success"</span>&gt;s.jsp&lt;/<span class="literal">result</span>&gt;</span><br><span class="line">&lt;/action&gt;</span><br><span class="line"></span><br><span class="line">&lt;bean id=<span class="string">"UserAction"</span>class=<span class="string">"action.UserAction"</span>&gt;</span><br><span class="line">	  	&lt;property name=<span class="string">"userDao"</span>&gt;</span><br><span class="line">	  	&lt;!-- 依赖注入（单例），在<span class="type">UserAction</span>中必须要有一个userDao的属性有其<span class="type">set</span>方法 --&gt;</span><br><span class="line">			&lt;<span class="keyword">ref</span> bean=<span class="string">"UsersDAO"</span>/&gt;</span><br><span class="line">		&lt;/property&gt;</span><br><span class="line"> &lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="2_u3001HTTP_Status_500_-_Hibernate_operation_3A_Cannot_open_connection_3B"><a href="#2_u3001HTTP_Status_500_-_Hibernate_operation_3A_Cannot_open_connection_3B" class="headerlink" title="2、HTTP Status 500 - Hibernate operation: Cannot open connection;"></a>2、HTTP Status 500 - Hibernate operation: Cannot open connection;</h3><p>Hibernate不能打开连接</p>
+<p>首先确定数据库链接是否可用 phpMyAdmin连接MySQL正常，Myeclipse链接MySQL正常 从而排除数据库问题，确保项目lib文件夹和tomcat的lib文件夹下面有数据库驱动jar包，又因为Hibernate已经由Spring托管 数据源设置在 applicationContext.xml 文件中从而确定是Spring配置问题 查看异常的root cause 发现其中有一句</p>
+<p>java.sql.SQLException: No suitable driver没有适合的驱动</p>
+<p>查资料发现数据源配置缺少属性driverClassName</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean <span class="property">id</span>=<span class="string">"dataSource"</span> <span class="type">class</span>=<span class="string">"org.apache.commons.dbcp.BasicDataSource"</span>&gt;</span><br><span class="line">        &lt;<span class="keyword">property</span> <span class="property">name</span>=<span class="string">"url"</span> value=<span class="string">"jdbc:mysql://localhost:3306/sjjg"</span>&gt;</span><br><span class="line">        </span><br><span class="line">        &lt;/<span class="keyword">property</span>&gt;</span><br><span class="line">        &lt;<span class="keyword">property</span> <span class="property">name</span>=<span class="string">"username"</span> value=<span class="string">"root"</span>&gt;&lt;/<span class="keyword">property</span>&gt;</span><br><span class="line">        &lt;<span class="keyword">property</span> <span class="property">name</span>=<span class="string">"password"</span> value=<span class="string">"19930419"</span>&gt;&lt;/<span class="keyword">property</span>&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+<p>在bean标签内加入一句</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="keyword">property</span> <span class="property">name</span>=<span class="string">"driverClassName"</span>value=<span class="string">"com.mysql.jdbc.Driver"</span> /&gt;</span><br></pre></td></tr></table></figure>
+<p>问题解决。此问题可能是由于MyEclipse中Spring文件自动生成，或者Hibernate反向工程自动生成文件缺少属性的问题</p>
+<h3 id="3_u3001Spring__u5BF9_Action__u6CE8_u5165_u7684_scope_3D_u201Dprototype_u201D"><a href="#3_u3001Spring__u5BF9_Action__u6CE8_u5165_u7684_scope_3D_u201Dprototype_u201D" class="headerlink" title="3、Spring 对 Action 注入的 scope=”prototype”"></a>3、Spring 对 Action 注入的 scope=”prototype”</h3><p>Spring 初始化的bean有三类：DAO、Service、Action。DAO和Service都是无状态的bean，多线程访问的时候不会出问题；而Action是有状态的。</p>
+<p>然而，Spring对Action的默认初始化方式为</p>
+<figure class="highlight d"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">scope</span>=<span class="string">"singleton"</span></span><br></pre></td></tr></table></figure>
+<p>这样做在多用户访问时，会造成多个用户共享一个Action对象的情况，数据会产生混乱，解决方案如下</p>
+<figure class="highlight d"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">scope</span>=<span class="string">"prototype"</span></span><br></pre></td></tr></table></figure>
+<p>是在每次用户发起请求时重新生成action对象，对于多线程访问不会出现问题，如果没有配置scope=prototype则添加的时候不会新建一个action，他任然会保留上次访问的过记录的信息。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Java/">Java</a>, <a href="/tags/MyEclipse/">MyEclipse</a>, <a href="/tags/SSH/">SSH</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:yoursite.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Java/">Java</a><small>2</small></li>
+  
+    <li><a href="/tags/Mac-OS-X/">Mac OS X</a><small>1</small></li>
+  
+    <li><a href="/tags/MyEclipse/">MyEclipse</a><small>1</small></li>
+  
+    <li><a href="/tags/MySQL/">MySQL</a><small>2</small></li>
+  
+    <li><a href="/tags/SSH/">SSH</a><small>1</small></li>
+  
+    <li><a href="/tags/编码/">编码</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Li zijian
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
