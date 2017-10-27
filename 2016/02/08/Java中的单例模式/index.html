@@ -1,155 +1,18 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  <title>Java中的单例模式 | Siunaus</title>
-  <meta name="author" content="Li zijian">
-  
-  <meta name="description" content="简要介绍Java中单例模式">
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="Siunaus,naijizil@gmail.com"><title>Java中的单例模式 · Siunaus</title><meta name="description" content="简要介绍Java中单例模式
 
-  <meta property="og:title" content="Java中的单例模式"/>
-  <meta property="og:site_name" content="Siunaus"/>
-
-  
-    <meta property="og:image" content="undefined"/>
-  
-
-  <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="Siunaus" type="application/atom+xml">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-
-</head>
-
-
-<body>
-  <header id="header" class="inner"><div class="alignleft">
-  <h1><a href="/">Siunaus</a></h1>
-  <h2><a href="/"></a></h2>
-</div>
-<nav id="main-nav" class="alignright">
-  <ul>
-    
-      <li><a href="/">Home</a></li>
-    
-      <li><a href="/archives">Archives</a></li>
-    
-  </ul>
-  <div class="clearfix"></div>
-</nav>
-<div class="clearfix"></div></header>
-  <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-02-08T02:19:36.000Z"><a href="/2016/02/08/Java中的单例模式/">2016-02-08</a></time>
-      
-      
-  
-    <h1 class="title">Java中的单例模式</h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>简要介绍Java中单例模式</p>
+单例模式是一种应用广泛的设计模式，顾名思义单例模式只允许有一个实例，应自动实例化，并向整个系统提供这一个实例。
+单例模式的特点如下：
+1.单例类只能有一个实例。2.单例类必须自己创建自己的唯一实例。3.单例类必须给所有其他对象提供这一实例。  
+Java中单例模式有多种"><meta name="keywords" content="Java,SQL,JS,Mac,Linux"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Siunaus</a></h3><div class="description"><p>Nothing lasts forever.</p></div></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a onclick="window.history.go(-1)" class="fa fa-chevron-left"> </a></li></div><div class="avatar"><img src="/images/favicon.png"></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>Java中的单例模式</a></h3></div><div class="post-content"><p>简要介绍Java中单例模式</p>
 <a id="more"></a>
 <p>单例模式是一种应用广泛的设计模式，顾名思义单例模式只允许有一个实例，应自动实例化，并向整个系统提供这一个实例。</p>
 <p>单例模式的特点如下：</p>
 <p>1.单例类只能有一个实例。<br>2.单例类必须自己创建自己的唯一实例。<br>3.单例类必须给所有其他对象提供这一实例。  </p>
 <p>Java中单例模式有多种写法，简要介绍两种实现方法。</p>
-<h2 id="u61D2_u6C49_u5F0F_u5355_u4F8B"><a href="#u61D2_u6C49_u5F0F_u5355_u4F8B" class="headerlink" title="懒汉式单例"></a>懒汉式单例</h2><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//懒汉式单例类.在第一次调用的时候实例化自己   </span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Singleton</span> &#123;  </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span>(<span class="params"></span>) </span>&#123;&#125;  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton single=<span class="keyword">null</span>;  </span><br><span class="line">    <span class="comment">//静态工厂方法   </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span>(<span class="params"></span>) </span>&#123;  </span><br><span class="line">         <span class="keyword">if</span> (single == <span class="keyword">null</span>) &#123;    </span><br><span class="line">             single = <span class="keyword">new</span> Singleton();  </span><br><span class="line">         &#125;    </span><br><span class="line">        <span class="keyword">return</span> single;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u61D2_u6C49_u5F0F_u5355_u4F8B"><a href="#u61D2_u6C49_u5F0F_u5355_u4F8B" class="headerlink" title="懒汉式单例"></a>懒汉式单例</h2><figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//懒汉式单例类.在第一次调用的时候实例化自己   </span></div><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Singleton</span> &#123;  </div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span>(<span class="params"></span>) </span>&#123;&#125;  </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton single=<span class="literal">null</span>;  </div><div class="line">    <span class="comment">//静态工厂方法   </span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span>(<span class="params"></span>) </span>&#123;  </div><div class="line">         <span class="keyword">if</span> (single == <span class="literal">null</span>) &#123;    </div><div class="line">             single = <span class="keyword">new</span> Singleton();  </div><div class="line">         &#125;    </div><div class="line">        <span class="keyword">return</span> single;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>Singleton通过将构造方法限定为private避免了类在外部被实例化，在同一个虚拟机范围内，Singleton的唯一实例只能通过getInstance()方法访问。</p>
 <p><strong>注意：以上实现方法并不是线程安全的，在并发环境下可能会产生多个实例，下面使用静态内部类来实现，避免同步造成的效率低下</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyHolder</span> </span>&#123;    </span><br><span class="line">       <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();    </span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span> <span class="params">()</span></span>&#123;&#125;    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;    </span><br><span class="line">       <span class="keyword">return</span> LazyHolder.INSTANCE;    </span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="u997F_u6C49_u5F0F_u5355_u4F8B"><a href="#u997F_u6C49_u5F0F_u5355_u4F8B" class="headerlink" title="饿汉式单例"></a>饿汉式单例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//饿汉式单例类.在类初始化时，已经自行实例化   </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton1</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton1</span><span class="params">()</span> </span>&#123;&#125;  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton1 single = <span class="keyword">new</span> Singleton1();  </span><br><span class="line">    <span class="comment">//静态工厂方法   </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton1 <span class="title">getInstance</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> single;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;    </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyHolder</span> </span>&#123;    </div><div class="line">       <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();    </div><div class="line">    &#125;    </div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span> <span class="params">()</span></span>&#123;&#125;    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;    </div><div class="line">       <span class="keyword">return</span> LazyHolder.INSTANCE;    </div><div class="line">    &#125;    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="u997F_u6C49_u5F0F_u5355_u4F8B"><a href="#u997F_u6C49_u5F0F_u5355_u4F8B" class="headerlink" title="饿汉式单例"></a>饿汉式单例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//饿汉式单例类.在类初始化时，已经自行实例化   </span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton1</span> </span>&#123;  </div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton1</span><span class="params">()</span> </span>&#123;&#125;  </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton1 single = <span class="keyword">new</span> Singleton1();  </div><div class="line">    <span class="comment">//静态工厂方法   </span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton1 <span class="title">getInstance</span><span class="params">()</span> </span>&#123;  </div><div class="line">        <span class="keyword">return</span> single;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>饿汉式在类创建的同时就已经创建好一个静态的对象供系统使用，以后不再改变，所以天生是线程安全的。</p>
-<h5 id="u5173_u4E8E_u7EBF_u7A0B_u5B89_u5168_u7684_u4E00_u4E9B_u8BA8_u8BBA_u5C06_u5728_u4E0B_u4E00_u7BC7_u4E2D_u8BA8_u8BBA_u3002"><a href="#u5173_u4E8E_u7EBF_u7A0B_u5B89_u5168_u7684_u4E00_u4E9B_u8BA8_u8BBA_u5C06_u5728_u4E0B_u4E00_u7BC7_u4E2D_u8BA8_u8BBA_u3002" class="headerlink" title="关于线程安全的一些讨论将在下一篇中讨论。"></a>关于线程安全的一些讨论将在下一篇中讨论。</h5>
-      
-    </div>
-    <footer>
-      
-        
-        
-  
-  <div class="tags">
-    <a href="/tags/Java/">Java</a>, <a href="/tags/设计模式/">设计模式</a>
-  </div>
-
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-</div></div>
-    <aside id="sidebar" class="alignright">
-  <div class="search">
-  <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="搜索">
-    <input type="hidden" name="q" value="site:yoursite.com">
-  </form>
-</div>
-
-  
-
-  
-<div class="widget tag">
-  <h3 class="title">标签</h3>
-  <ul class="entry">
-  
-    <li><a href="/tags/Java/">Java</a><small>4</small></li>
-  
-    <li><a href="/tags/Mac-OS-X/">Mac OS X</a><small>1</small></li>
-  
-    <li><a href="/tags/MyEclipse/">MyEclipse</a><small>1</small></li>
-  
-    <li><a href="/tags/MySQL/">MySQL</a><small>2</small></li>
-  
-    <li><a href="/tags/SSH/">SSH</a><small>1</small></li>
-  
-    <li><a href="/tags/VCS/">VCS</a><small>1</small></li>
-  
-    <li><a href="/tags/编码/">编码</a><small>1</small></li>
-  
-    <li><a href="/tags/设计模式/">设计模式</a><small>1</small></li>
-  
-  </ul>
-</div>
-
-</aside>
-    <div class="clearfix"></div>
-  </div>
-  <footer id="footer" class="inner"><div class="alignleft">
-  
-  &copy; 2016 Li zijian
-  
-</div>
-<div class="clearfix"></div></footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
-
-
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox();
-})(jQuery);
-</script>
-
-</body>
-</html>
+<h5 id="u5173_u4E8E_u7EBF_u7A0B_u5B89_u5168_u7684_u4E00_u4E9B_u8BA8_u8BBA_u5C06_u5728_u4E0B_u4E00_u7BC7_u4E2D_u8BA8_u8BBA_u3002"><a href="#u5173_u4E8E_u7EBF_u7A0B_u5B89_u5168_u7684_u4E00_u4E9B_u8BA8_u8BBA_u5C06_u5728_u4E0B_u4E00_u7BC7_u4E2D_u8BA8_u8BBA_u3002" class="headerlink" title="关于线程安全的一些讨论将在下一篇中讨论。"></a>关于线程安全的一些讨论将在下一篇中讨论。</h5></div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2016-02-08</span><i class="fa fa-tag"></i><a href="/tags/Java/" title="Java" class="tag">Java </a><a href="/tags/设计模式/" title="设计模式" class="tag">设计模式 </a></div></div></div></div><div class="share"><div class="evernote"><a href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank" class="fa fa-bookmark"></a></div><div class="weibo"><a href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));" class="fa fa-weibo"></a></div><div class="twitter"><a href="http://twitter.com/home?status=,http://yoursite.com/2016/02/08/Java中的单例模式/,Siunaus,Java中的单例模式,;" class="fa fa-twitter"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a role="navigation" href="/2016/07/26/SVN配置修改文件必须加锁/" title="SVN配置修改文件必须加锁" class="btn">上一篇</a></li><li class="next pagbuttons"><a role="navigation" href="/2016/01/01/Java中List一些方法的使用/" title="Java中List一些方法的使用" class="btn">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
